@@ -40,7 +40,7 @@ import javax.swing.SwingUtilities;
  * since it is not waiting for the application code to return.
  * 
  */
-public abstract class GUIUtilitiesIO extends Test
+public abstract class GUIUtilitiesIO
 {
 	// The output area of the GUI.
 	protected JTextArea questionArea = null;
