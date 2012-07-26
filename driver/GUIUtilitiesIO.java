@@ -1,0 +1,175 @@
+/* PRESIDIO CONFIDENTIAL
+ * __________________
+ * 
+ * Copyright (c) [2012] Presidio Networked Solutions 
+ * All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Presidio Networked Solutions. The intellectual and 
+ * technical concepts contained herein are proprietary to Presidio Networked 
+ * Solutions and may be covered by U.S. and Foreign Patents, patents in process, 
+ * and are protected by trade secret or copyright law. Dissemination of this 
+ * information or reproduction of this material is strictly forbidden unless 
+ * prior written permission is obtained from Presidio Networked Solutions.
+ * 
+ * Author: 	Andrew Garcia
+ * Email:	agarcia@presido.com
+ * Last Modified: Jul 25, 2012 10:27:39 AM
+ */
+
+package driver;
+
+import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+
+/**
+ * 
+ * This class defines all of the IO functionality needed by the GUI class. The
+ * reason for this class is that GUI IO in Java is very tricky in a class
+ * hierarchy like this one. When a menu item is clicked, the GUI thread will
+ * block IO until control is returned to the GUI's scope. The IO functions here
+ * mostly push a runnable object onto the GUI scope's queue to be executed when
+ * the GUI is ready. Control is returned to the GUI by running application code
+ * in a separate thread (see GenericEventHandler), and then that thread calls
+ * these methods, which push the runnables to the GUI, who is ready to execute
+ * since it is not waiting for the application code to return.
+ * 
+ */
+public abstract class GUIUtilitiesIO
+{
+	// The output area of the GUI.
+	protected JTextArea questionArea = null;
+	// The user input area of the GUI.
+	protected JTextArea answerArea = null;
+	// Keeps track of whether or not the input is ready to be read.
+	protected boolean isInputReady = false;
+	// The object that listens for the event indicating the input is ready to be
+	// read.
+	private KeyListener listener = null;
+
+	/**
+	 * This method assigns an object to the 'listener' field.
+	 * 
+	 * @param listener_
+	 *            The object you want to use.
+	 */
+	public void setKeyListener(KeyListener listener_)
+	{
+		listener = listener_;
+	}
+
+	/**
+	 * This method reads the input from the user.
+	 * 
+	 * @param prompt
+	 *            A message to display to the user prompting for what
+	 *            information to provide.
+	 * @return The user's input.
+	 */
+	public synchronized String getInput(String prompt)
+	{
+		String tmp = null;
+		answerArea.addKeyListener(listener);
+		// Display the prompt if there is one.
+		if (prompt != null)
+		{
+			this.out(prompt);
+		}
+		// Waits until the KeyListener sets isInputReady to true.
+		while (!isInputReady)
+		{
+			tmp = answerArea.getText();
+		}
+		// Clear the text in the answer area and indicates the input is not
+		// ready.
+		answerArea.setText("");
+		isInputReady = false;
+		return tmp.trim();
+	}
+
+	/**
+	 * This method reads input without a prompt. This is used mostly for pausing
+	 * the application while the user reads a message.
+	 * 
+	 * @return The user's input.
+	 */
+	public synchronized String getInput()
+	{
+		return this.getInput(null);
+	}
+
+	/**
+	 * This method displays text to the question area of the GUI.
+	 * 
+	 * @param str
+	 *            The message to display.
+	 */
+	public void out(final String str)
+	{
+		// Creates a Runnable and tells the GUI to execute it when the GUI is
+		// ready.
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				questionArea.setText(questionArea.getText() + "\n" + str);
+			}
+		});
+	}
+
+	/**
+	 * This method clears the question area of any text.
+	 */
+	public void cls()
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				questionArea.setText("");
+			}
+		});
+	}
+
+	/**
+	 * This method redirects System.out and System.err to the GUI. If any code
+	 * included System.out.print... then it would print to the GUI instead of
+	 * standard output.
+	 */
+	protected void redirectStreams()
+	{
+		// Creates a new output stream and overrides the write methods to output
+		// to the GUI.
+		OutputStream outs = new OutputStream()
+		{
+			@Override
+			public void write(int b) throws IOException
+			{
+				GUIUtilitiesIO.this.out(String.valueOf((char) b));
+			}
+
+			@Override
+			public void write(byte[] b, int off, int len) throws IOException
+			{
+				GUIUtilitiesIO.this.out(new String(b, off, len));
+			}
+
+			@Override
+			public void write(byte[] b) throws IOException
+			{
+				GUIUtilitiesIO.this.out(new String(b, 0, b.length));
+			}
+		};
+
+		// Redirect the System.out and System.err streams to point to outs.
+		System.setOut(new PrintStream(outs, true));
+		System.setErr(new PrintStream(outs, true));
+	}
+}
