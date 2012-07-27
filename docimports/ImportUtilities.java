@@ -82,27 +82,4 @@ public class ImportUtilities
 
 		return fc.getSelectedFile();
 	}
-
-//	public static void main(String[] args) throws IOException
-//	{
-//		JFileChooser fc = new JFileChooser();
-//		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-//		fc.setMultiSelectionEnabled(true);
-//
-//		JFrame frame = new JFrame("FileChooserDemo");
-//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		frame.add(fc);
-//
-//		fc.showOpenDialog(frame);
-//		File[] files = fc.getSelectedFiles();
-//
-//		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//		fc.setMultiSelectionEnabled(false);
-//
-//		fc.showSaveDialog(frame);
-//		File dest = fc.getSelectedFile();
-//
-//		for (int ii = 0; ii < files.length; ++ii)
-//			FileUtils.copyFileToDirectory(files[ii], dest);
-//	}
 }
