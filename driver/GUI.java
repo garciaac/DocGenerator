@@ -31,12 +31,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -424,5 +426,43 @@ public class GUI extends GUIUtilitiesIO
 		window.setVisible(false);
 		window.dispose();
 		System.exit(0);
+	}
+	
+	public static void main(String[] args)
+	{
+		// This defines an object that dictates what happens when the GUI window is
+		// closed.
+		WindowAdapter wa = new WindowAdapter()
+		{
+			@Override
+			public void windowClosing(WindowEvent winEvt)
+			{
+				// This message will be included in the dialog window.
+				String msg = "Are you sure? Prematurely exiting this window will not output a file.";
+				// Shows a dialog that asks the user to confirm yes or no if he/she
+				// wants to close the GUI
+				int resp = JOptionPane.showConfirmDialog(null, msg, null, JOptionPane.YES_NO_OPTION);
+				// If the answer is yes, then exit the application.
+				if (resp == JOptionPane.YES_OPTION)
+				{
+					// GUI.this refers to the 'this' keyword of the outer class. If
+					// it were 'this.exit()', then 'this' would refer to the
+					// WindowAdapter object.
+					System.exit(0);
+				}
+			}
+		};
+		
+		JMenu checkboxMenu = new JMenu();
+		JCheckBoxMenuItem item = new JCheckBoxMenuItem("Item1");
+		JFrame gui = new JFrame();
+		gui.setSize(800, 800);
+		JPanel output = new JPanel();
+		checkboxMenu.add(item);
+		output.add(checkboxMenu);
+		gui.add(output, BorderLayout.CENTER);
+		gui.addWindowListener(wa);
+		gui.setVisible(true);
+		
 	}
 }
