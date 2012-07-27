@@ -14,7 +14,7 @@
  * 		
  * Author: 	Andrew Garcia
  * Email:	agarcia@presido.com
- * Last Modified: Jul 25, 2012 10:05:20 AM
+ * Last Modified: Jul 26, 2012 02:26:42 PM
  */
 
 package event_handlers;
@@ -31,6 +31,7 @@ import javax.swing.JOptionPane;
 import questionaires.Questionaire;
 import questionaires.QuestionaireAggregator;
 import word_interfaces.WordOutputDocument;
+import docimports.ImportUtilities;
 import driver.GUI;
 
 /**
@@ -97,9 +98,6 @@ public abstract class GenericEventHandler implements ActionListener, Runnable
 	@Override
 	public void run()
 	{
-		// The name of the output file. It can't be of length zero to start so
-		// the below loop will work.
-		String outFilename = " ";
 		// The output document object.
 		WordOutputDocument outputDoc = null;
 		// Allow the user to input text.
@@ -109,22 +107,17 @@ public abstract class GenericEventHandler implements ActionListener, Runnable
 		// Hide the menu so the user can't spawn another thread while this one
 		// is executing.
 		GUI.getInstance().hideMenu();
+		GUI.getInstance().cls();
 
-		do // Loop until a valid file name is given.
-		{
-			// Clear the output area and prompt for an output file name.
-			GUI.getInstance().cls();
-			if (outFilename.length() == 0)
-				GUI.getInstance().out(
-									"That is an invalid file name. Please only use "
-														+ "alphanumeric characters and spaces");
-
-			GUI.getInstance().out("What would you like to name the output file?");
-			outFilename = GUI.getInstance().getInput().trim();
-		} while (outFilename.length() == 0);
+		// @formatter:off --> turns off my automatic formatter
+		// Tells the user to choose a location for the output file
+		JOptionPane.showMessageDialog(new JFrame(), 
+							"Please choose a location for the output file",
+							null, 
+							JOptionPane.INFORMATION_MESSAGE);
 
 		// Create an output document
-		outputDoc = new WordOutputDocument(outFilename);
+		outputDoc = new WordOutputDocument(ImportUtilities.getOutputFile());
 
 		// Loop through all of the questionaire files.
 		for (int ii = 0; ii < questions.size(); ++ii)
@@ -141,22 +134,22 @@ public abstract class GenericEventHandler implements ActionListener, Runnable
 			catch (FileNotFoundException fileException)
 			{
 				JOptionPane.showMessageDialog(new JFrame(), 
-									fileException.getMessage(), 
-									"Critical Error",
-									JOptionPane.ERROR_MESSAGE);
-				
-				System.err.println("File " + questions.get(ii).getFilename()
-									+ " could not be found. System will continue without it.");
+												fileException.getMessage(),
+												"Critical Error", 
+												JOptionPane.ERROR_MESSAGE);
+
+				System.err.println("File " + questions.get(ii).getFilename() + 
+									" could not be found. System will continue without it.");
 			}
 			catch (IOException ioException)
 			{
 				JOptionPane.showMessageDialog(new JFrame(), 
-									ioException.getMessage(), 
-									"Critical Error",
-									JOptionPane.ERROR_MESSAGE);
-				
-				System.err.println("An error occured while communicating the the user. "
-									+ "System will continue. Check output file after termination.");
+												ioException.getMessage(),
+												"Critical Error", 
+												JOptionPane.ERROR_MESSAGE);
+
+				System.err.println("An error occured while communicating the the user. " + 
+									"System will continue. Check output file after termination.");
 			}
 
 			// Creates a new section in the output document.
@@ -168,15 +161,14 @@ public abstract class GenericEventHandler implements ActionListener, Runnable
 			outputDoc.write();
 		}
 		catch (IOException e)
-		{
-			IOException error = new IOException(
-								"An error occured while writing to output file. Please make "
-									+ "sure it is not open in another program and try again.", e);
-			GUI.getInstance().finishWithError(error);
+		{			
+			GUI.getInstance().finishWithError(
+								new IOException("An error occured while writing to output file. " +
+										"Please make sure it is not open in another program " +
+										"and try again.", e));
 		}
 
 		// Exit the application.
 		GUI.getInstance().finish();
 	}
-
 }

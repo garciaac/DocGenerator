@@ -21,6 +21,7 @@ package driver;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  * 
@@ -34,16 +35,25 @@ public class Driver
 	{
 		try
 		{
+			// Sets the look and feel of the GUI windows to the user's native
+			// system.
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+			// If it fails, just ignore the errors and continue with the default
+			// Java look and feel.
+			catch (Exception e)
+			{}
+
 			// Grabs the singleton instance of the GUI. It is automatically
 			// shown on screen.
 			GUI.getInstance();
 		}
 		catch (Exception e)
 		{
-			JOptionPane.showMessageDialog(new JFrame(), 
-										e.getMessage(), 
-										"Critical Error",
-										JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Critical Error",
+								JOptionPane.ERROR_MESSAGE);
 			System.exit(-1);
 		}
 	}

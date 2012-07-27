@@ -405,7 +405,11 @@ public class GUI extends GUIUtilitiesIO
 	public void finishWithError(Exception e)
 	{
 		String msg = "Output document could not be created due to an error. "
-							+ "Please try again later.\n" + e.getMessage();
+							+ "Please try again later.\n";
+		
+		if (e.getMessage() != null)
+			msg += e.getMessage();
+		
 		JOptionPane.showMessageDialog(window, msg, null, JOptionPane.PLAIN_MESSAGE);
 		this.exit();
 	}
