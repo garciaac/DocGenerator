@@ -1,5 +1,7 @@
 package docimports;
 
+import gui.GUI;
+
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -8,7 +10,6 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FilenameUtils;
 
-import driver.GUI;
 
 public class ImportUtilities
 {

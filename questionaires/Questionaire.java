@@ -19,13 +19,16 @@
 
 package questionaires;
 
+import gui.GUI;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
+import javax.swing.JCheckBox;
+
 import word_interfaces.WordInputDocument;
 import word_interfaces.WordOutputDocument;
-import driver.GUI;
 
 /**
  * 
@@ -109,9 +112,28 @@ public class Questionaire
 		// files.
 		while (question != null && question.length() != 0)
 		{
+			// Clear any previous text.
+			GUI.getInstance().cls();
+			GUI.getInstance().clearOptions();
 			// Record question and answer.
 			output.createQuestion(question);
-			output.createAnswer(GUI.getInstance().getInput(question));
+			GUI.getInstance().out(question);
+			String option = input.readLine();
+			// Loop until there are no more options.
+			while (option != null && option.length() != 0)
+			{
+				// Add each option to the GUI.
+				GUI.getInstance().addOption(new JCheckBox(option));
+				// Read the next one.
+				option = input.readLine();
+			}
+			GUI.getInstance().getInput();
+			for (int ii=0; ii<GUI.getInstance().getSelectedOptions().size(); ++ii)
+			{
+				output.createAnswer(GUI.getInstance().getSelectedOptions().get(ii) + "\n");
+			}
+			// Put a blank line in between questions.
+			output.createAnswer("\n");
 			// Read next question.
 			question = input.readLine();
 			// Print a blank line

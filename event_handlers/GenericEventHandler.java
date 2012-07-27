@@ -19,6 +19,8 @@
 
 package event_handlers;
 
+import gui.GUI;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
@@ -32,7 +34,6 @@ import questionaires.Questionaire;
 import questionaires.QuestionaireAggregator;
 import word_interfaces.WordOutputDocument;
 import docimports.ImportUtilities;
-import driver.GUI;
 
 /**
  * 
