@@ -14,7 +14,7 @@
  * 
  * Author: 	Andrew Garcia
  * Email:	agarcia@presido.com
- * Last Modified: Jul 25, 2012 10:05:30 AM
+ * Last Modified: Aug 7, 2012 10:45:30 AM
  */
 
 package questionaires;
@@ -114,8 +114,9 @@ public class Questionaire
 		{
 			// Clear any previous text.
 			GUI.getInstance().cls();
+			// Clear out any checkboxes on screen.
 			GUI.getInstance().clearOptions();
-			// Record question and answer.
+			// Record question and read options.
 			output.createQuestion(question);
 			GUI.getInstance().out(question);
 			String option = input.readLine();
@@ -127,13 +128,12 @@ public class Questionaire
 				// Read the next one.
 				option = input.readLine();
 			}
+			// Wait for user to press enter. TODO --> make this into a submit button
 			GUI.getInstance().getInput();
+			// Add all of the selected options to the output file.
 			for (int ii=0; ii<GUI.getInstance().getSelectedOptions().size(); ++ii)
-			{
 				output.createAnswer(GUI.getInstance().getSelectedOptions().get(ii) + "\n");
-			}
-			// Put a blank line in between questions.
-			output.createAnswer("\n");
+
 			// Read next question.
 			question = input.readLine();
 			// Print a blank line
@@ -142,6 +142,7 @@ public class Questionaire
 
 		// Clear the output area in preparation for a new message.
 		GUI.getInstance().cls();
+		GUI.getInstance().clearOptions();
 		GUI.getInstance().setBoldFont();
 
 		// Additional information that should be displayed to the user, but
