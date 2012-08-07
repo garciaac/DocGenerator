@@ -19,6 +19,8 @@
 
 package driver;
 
+import gui.GUI;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;

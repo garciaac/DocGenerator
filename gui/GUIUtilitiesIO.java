@@ -14,16 +14,20 @@
  * 
  * Author: 	Andrew Garcia
  * Email:	agarcia@presido.com
- * Last Modified: Jul 25, 2012 10:27:39 AM
+ * Last Modified: Aug 4, 2012 10:27:39 AM
  */
 
-package driver;
+package gui;
 
+import java.awt.Font;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
@@ -46,6 +50,8 @@ public abstract class GUIUtilitiesIO
 	protected JTextArea questionArea = null;
 	// The user input area of the GUI.
 	protected JTextArea answerArea = null;
+	protected OptionPanel options = null;
+	protected JFrame window = null;
 	// Keeps track of whether or not the input is ready to be read.
 	protected boolean isInputReady = false;
 	// The object that listens for the event indicating the input is ready to be
@@ -122,7 +128,7 @@ public abstract class GUIUtilitiesIO
 			}
 		});
 	}
-
+	
 	/**
 	 * This method clears the question area of any text.
 	 */
@@ -136,6 +142,51 @@ public abstract class GUIUtilitiesIO
 				questionArea.setText("");
 			}
 		});
+	}
+	
+	/**
+	 * Adds a new checkbox option to the window.
+	 * 
+	 * @param option
+	 * 				The checkbox to add.
+	 */
+	public void addOption(final JCheckBox option)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				options.add(option);
+				window.revalidate();
+			}
+		});
+	}
+	
+	/**
+	 * Deletes all of the current checkboxes form the screen.
+	 */
+	public void clearOptions()
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				options.clear();
+				window.repaint();
+			}
+		});
+	}
+	
+	/**
+	 * This method gives access to the user's selected options.
+	 * 
+	 * @return An array of strings that the user selected.
+	 */
+	public ArrayList<String> getSelectedOptions()
+	{
+		return options.getSelectedOptions();
 	}
 
 	/**
@@ -171,5 +222,41 @@ public abstract class GUIUtilitiesIO
 		// Redirect the System.out and System.err streams to point to outs.
 		System.setOut(new PrintStream(outs, true));
 		System.setErr(new PrintStream(outs, true));
+	}
+	
+	/**
+	 * This method sets the font in the question area to be bold and bigger. It
+	 * is used to display the important messages at the end of the questionaire
+	 * files located in the practice directories.
+	 */
+	public void setBoldFont()
+	{
+		questionArea.setFont(new Font("Times New Roman", Font.BOLD, 20));
+	}
+
+	/**
+	 * This method sets the font back to the default.
+	 */
+	public void setDefaultFont()
+	{
+		questionArea.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+	}
+
+	/**
+	 * This method allows editing of the answer area. Editing is disabled until
+	 * a menu item is clicked.
+	 */
+	public void setEditable()
+	{
+		answerArea.setText("");
+		answerArea.setEditable(true);
+	}
+
+	/**
+	 * This method disallows editing of the answer area.
+	 */
+	public void setUnEditable()
+	{
+		answerArea.setEditable(false);
 	}
 }

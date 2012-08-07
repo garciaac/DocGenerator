@@ -17,7 +17,7 @@
  * Last Modified: Jul 25, 2012 10:04:59 AM
  */
 
-package driver;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,13 +31,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
@@ -59,30 +60,36 @@ import event_handlers.WirelessHandler;
  */
 public class GUI extends GUIUtilitiesIO
 {
+	/* @formatter:off --> turns off my automatic formatter */
 	// //////////////////////////////////////////////////////////////////////////////////
 	// Fields Inherited from GUIUtilitiesIO class
 	//
-	// protected JTextArea questionArea = null;
-	// protected JTextArea answerArea = null;
-	// protected boolean isInputReady = false;
-	// protected JLabel header = null;
+	// protected JTextArea questionArea;
+	// protected JTextArea answerArea;
+	// protected OptionPanel options;
+	// protected boolean isInputReady;
+	// protected JLabel header;
 	//
 	// /////////////////////////////////////////////////////////////////////////////////
 	// Methods Inherited from GUIUtilitiesIO class
 	//
-	// public void setKeyListener(KeyListener listener_) public synchronized
-	// String getInput(String prompt) public synchronized String getInput()
-	// public void out(final String str) public void cls()
+	// public void setKeyListener(KeyListener listener_)
+	// public synchronized String getInput(String prompt) 
+	// public synchronized String getInput()
+	// public void out(final String str) 
+	// public void cls()
+	// public void addOption(final Component option)
 	// protected void redirectStreams()
 	//
 	// /////////////////////////////////////////////////////////////////////////////////
+	/* @formatter:on */
 
 	// The singleton instance of the class.
 	private static volatile GUI instance = null;
 	// The title for the GUI window
 	private static String titleStr = "Doc Generator";
 	// The actual GUI window
-	private JFrame window = null;
+	//private JFrame window = null;
 	// A header that can be displayed at the top of the window
 	private JLabel header = null;
 	// The menu bar that runs along the top of the window
@@ -186,10 +193,7 @@ public class GUI extends GUIUtilitiesIO
 		header.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC, 32));
 
 		// Defines the text area where the questions will be displayed.
-		questionArea = new JTextArea(3, 80);
-		// Specifies which font to use initially (There are multiple fonts for
-		// questionArea. See methods below).
-		this.setBoldFont();
+		questionArea = new JTextArea(3, 60);
 		// Makes sure that text can't be typed in the output area.
 		questionArea.setEditable(false);
 		// Makes it so the GUI output will line wrap instead of having to scroll
@@ -197,7 +201,22 @@ public class GUI extends GUIUtilitiesIO
 		questionArea.setLineWrap(true);
 		// Pads the borders of the GUI so the text is not right up against them.
 		questionArea.setMargin(new Insets(10, 10, 10, 10));
-		questionArea.setBackground(Color.LIGHT_GRAY);
+		//JScrollPane scrollingArea = new JScrollPane(questionArea);
+		// Put the question area into a panel to use later.
+		JPanel questionPanel = new JPanel();
+		questionPanel.add(questionArea);
+		questionPanel.setBackground(Color.WHITE);
+		
+		// Initialize the options field.
+		options = new OptionPanel();
+		options.getPanel().setBackground(Color.WHITE);
+		
+		// Combine the question area and options field into one panel.
+		JPanel optionWindow = new JPanel(new BorderLayout());
+		optionWindow.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		optionWindow.setBackground(Color.WHITE);
+		optionWindow.add(options.getPanel(), BorderLayout.CENTER);
+		optionWindow.add(questionPanel, BorderLayout.NORTH);
 
 		// Defines the area where the user can type input.
 		answerArea = new JTextArea("Input text here.", 10, 80);
@@ -205,31 +224,31 @@ public class GUI extends GUIUtilitiesIO
 		answerArea.setEditable(false);
 		answerArea.setLineWrap(true);
 		answerArea.setMargin(new Insets(10, 10, 10, 10));
-		answerArea.setBackground(Color.WHITE);
 
 		// Allows GUIUtilitiesIO access to the KeyListener.
 		super.setKeyListener(listener);
 		// Redirects System.out and System.err to the GUI.
 		this.redirectStreams();
-
-		// Allows the questionArea to keep displaying output without overwriting
-		// anything.
-		JScrollPane scrollingArea = new JScrollPane(questionArea);
+		// Specifies which font to use initially (There are multiple fonts for
+		// questionArea. See methods below).
+		this.setBoldFont();
+		
 		// Creates the window and adds all of the components.
 		window = new JFrame(title);
 		window.setSize(new Dimension(1000, 800));
-		window.setJMenuBar(menu);
 		// The default action when exiting the window is to do nothing. The
 		// window adapter defined earlier actually handles what happens, but
 		// this is needed in order to keep the window open when the user clicks
 		// 'No' in the confirmation dialog.
 		window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		window.add(scrollingArea, BorderLayout.CENTER);
+		window.setJMenuBar(menu);
+		//window.add(scrollingArea, BorderLayout.CENTER);
+		window.add(optionWindow, BorderLayout.CENTER);
 		window.add(answerArea, BorderLayout.SOUTH);
 		window.add(header, BorderLayout.NORTH);
 		window.addWindowListener(wAdapt);
 		window.setVisible(true);
-		
+
 		// Displays an initial message.
 		this.out("Select a practice from the menu.");
 	}
@@ -252,10 +271,8 @@ public class GUI extends GUIUtilitiesIO
 			}
 			catch (IOException e)
 			{
-				JOptionPane.showMessageDialog(new JFrame(), 
-												e.getMessage(), 
-												"Critical Error",
-												JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Critical Error",
+									JOptionPane.ERROR_MESSAGE);
 				System.exit(-1);
 			}
 		}
@@ -275,7 +292,7 @@ public class GUI extends GUIUtilitiesIO
 		window.setJMenuBar(menu);
 		window.validate();
 	}
-
+	
 	/**
 	 * This method displays text in the header field of the GUI window.
 	 * 
@@ -287,41 +304,6 @@ public class GUI extends GUIUtilitiesIO
 		header.setText(label);
 	}
 
-	/**
-	 * This method sets the font in the question area to be bold and bigger. It
-	 * is used to display the important messages at the end of the questionaire
-	 * files located in the practice directories.
-	 */
-	public void setBoldFont()
-	{
-		questionArea.setFont(new Font("Times New Roman", Font.BOLD, 20));
-	}
-
-	/**
-	 * This method sets the font back to the default.
-	 */
-	public void setDefaultFont()
-	{
-		questionArea.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-	}
-
-	/**
-	 * This method allows editing of the answer area. Editing is disabled until
-	 * a menu item is clicked.
-	 */
-	public void setEditable()
-	{
-		answerArea.setText("");
-		answerArea.setEditable(true);
-	}
-
-	/**
-	 * This method disallows editing of the answer area.
-	 */
-	public void setUnEditable()
-	{
-		answerArea.setEditable(false);
-	}
 
 	/**
 	 * This method creates the menu bar, which will go at the top of the GUI
@@ -406,10 +388,10 @@ public class GUI extends GUIUtilitiesIO
 	{
 		String msg = "Output document could not be created due to an error. "
 							+ "Please try again later.\n";
-		
+
 		if (e.getMessage() != null)
 			msg += e.getMessage();
-		
+
 		JOptionPane.showMessageDialog(window, msg, null, JOptionPane.PLAIN_MESSAGE);
 		this.exit();
 	}

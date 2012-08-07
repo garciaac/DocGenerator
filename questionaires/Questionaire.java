@@ -14,18 +14,21 @@
  * 
  * Author: 	Andrew Garcia
  * Email:	agarcia@presido.com
- * Last Modified: Jul 25, 2012 10:05:30 AM
+ * Last Modified: Aug 7, 2012 10:45:30 AM
  */
 
 package questionaires;
+
+import gui.GUI;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
+import javax.swing.JCheckBox;
+
 import word_interfaces.WordInputDocument;
 import word_interfaces.WordOutputDocument;
-import driver.GUI;
 
 /**
  * 
@@ -109,9 +112,28 @@ public class Questionaire
 		// files.
 		while (question != null && question.length() != 0)
 		{
-			// Record question and answer.
+			// Clear any previous text.
+			GUI.getInstance().cls();
+			// Clear out any checkboxes on screen.
+			GUI.getInstance().clearOptions();
+			// Record question and read options.
 			output.createQuestion(question);
-			output.createAnswer(GUI.getInstance().getInput(question));
+			GUI.getInstance().out(question);
+			String option = input.readLine();
+			// Loop until there are no more options.
+			while (option != null && option.length() != 0)
+			{
+				// Add each option to the GUI.
+				GUI.getInstance().addOption(new JCheckBox(option));
+				// Read the next one.
+				option = input.readLine();
+			}
+			// Wait for user to press enter. TODO --> make this into a submit button
+			GUI.getInstance().getInput();
+			// Add all of the selected options to the output file.
+			for (int ii=0; ii<GUI.getInstance().getSelectedOptions().size(); ++ii)
+				output.createAnswer(GUI.getInstance().getSelectedOptions().get(ii) + "\n");
+
 			// Read next question.
 			question = input.readLine();
 			// Print a blank line
@@ -120,6 +142,7 @@ public class Questionaire
 
 		// Clear the output area in preparation for a new message.
 		GUI.getInstance().cls();
+		GUI.getInstance().clearOptions();
 		GUI.getInstance().setBoldFont();
 
 		// Additional information that should be displayed to the user, but

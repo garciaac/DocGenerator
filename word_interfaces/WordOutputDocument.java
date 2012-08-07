@@ -14,7 +14,7 @@
  * 
  * Author: 	Andrew Garcia
  * Email:	agarcia@presido.com
- * Last Modified: Jul 20, 2012 4:11:14 PM
+ * Last Modified: Aug 7, 2012 10:57:14 PM
  */
 
 package word_interfaces;
@@ -119,6 +119,7 @@ public class WordOutputDocument
 	 */
 	public void createQuestion(String question)
 	{
+		this.createParagraph();
 		XWPFRun text = document.getLastParagraph().createRun();
 		text.setText(question);
 		text.addCarriageReturn();
