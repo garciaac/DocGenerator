@@ -19,12 +19,14 @@
 
 package gui;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -32,6 +34,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -225,6 +228,30 @@ public class GUI extends GUIUtilitiesIO
 		answerArea.setLineWrap(true);
 		answerArea.setMargin(new Insets(10, 10, 10, 10));
 
+		//TODO
+		submit = new JButton("Submit");
+		submit.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				try
+				{
+					GUI.super.submit();
+				}
+				catch (AWTException e)
+				{
+					GUI.this.finishWithError(e);
+				}
+			}
+		});
+		
+		//TODO
+		JPanel answerWindow = new JPanel(new BorderLayout());
+		answerWindow.add(answerArea, BorderLayout.CENTER);
+		answerWindow.add(submit, BorderLayout.SOUTH);
+		
+		
 		// Allows GUIUtilitiesIO access to the KeyListener.
 		super.setKeyListener(listener);
 		// Redirects System.out and System.err to the GUI.
@@ -244,7 +271,7 @@ public class GUI extends GUIUtilitiesIO
 		window.setJMenuBar(menu);
 		//window.add(scrollingArea, BorderLayout.CENTER);
 		window.add(optionWindow, BorderLayout.CENTER);
-		window.add(answerArea, BorderLayout.SOUTH);
+		window.add(answerWindow, BorderLayout.SOUTH);//TODO
 		window.add(header, BorderLayout.NORTH);
 		window.addWindowListener(wAdapt);
 		window.setVisible(true);

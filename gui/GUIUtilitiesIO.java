@@ -19,13 +19,17 @@
 
 package gui;
 
+import java.awt.AWTException;
 import java.awt.Font;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -50,6 +54,8 @@ public abstract class GUIUtilitiesIO
 	protected JTextArea questionArea = null;
 	// The user input area of the GUI.
 	protected JTextArea answerArea = null;
+	//TODO
+	protected JButton submit = null;
 	protected OptionPanel options = null;
 	protected JFrame window = null;
 	// Keeps track of whether or not the input is ready to be read.
@@ -258,5 +264,14 @@ public abstract class GUIUtilitiesIO
 	public void setUnEditable()
 	{
 		answerArea.setEditable(false);
+	}
+	
+	//TODO 
+	protected void submit() throws AWTException
+	{
+		Robot robot = new Robot();
+		answerArea.requestFocus();
+		robot.keyPress(KeyEvent.VK_ENTER);
+		robot.keyRelease(KeyEvent.VK_ENTER);
 	}
 }

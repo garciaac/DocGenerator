@@ -128,8 +128,11 @@ public class Questionaire
 				// Read the next one.
 				option = input.readLine();
 			}
+			
 			// Wait for user to press enter. TODO --> make this into a submit button
-			output.createAnswer(GUI.getInstance().getInput());
+			String additionalText = GUI.getInstance().getInput().trim();
+			if (additionalText.length() > 0)
+				output.createAnswer(additionalText);
 			// Add all of the selected options to the output file.
 			for (int ii=0; ii<GUI.getInstance().getSelectedOptions().size(); ++ii)
 				output.createAnswer(GUI.getInstance().getSelectedOptions().get(ii) + "\n");
