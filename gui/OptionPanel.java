@@ -22,11 +22,8 @@ package gui;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.Robot;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -53,7 +50,6 @@ public class OptionPanel implements ItemListener
 	// The container for the selected options.
 	private ArrayList<String> selectedOptions = null;
 	private JTextArea textInput = null;
-	private boolean isInputReady = false;
 
 	/**
 	 * Constructor that initializes all of the fields
