@@ -133,6 +133,7 @@ public class Questionaire
 			String additionalText = GUI.getInstance().getInput().trim();
 			if (additionalText.length() > 0)
 				output.createAnswer(additionalText);
+			
 			// Add all of the selected options to the output file.
 			for (int ii=0; ii<GUI.getInstance().getSelectedOptions().size(); ++ii)
 				output.createAnswer(GUI.getInstance().getSelectedOptions().get(ii) + "\n");
