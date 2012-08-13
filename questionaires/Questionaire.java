@@ -129,6 +129,9 @@ public class Questionaire
 				option = input.readLine();
 			}
 			
+			//TODO
+			GUI.getInstance().addEditableField(new JCheckBox("Other"));
+			
 			// Wait for user to press enter. TODO --> make this into a submit button
 			String additionalText = GUI.getInstance().getInput().trim();
 			if (additionalText.length() > 0)

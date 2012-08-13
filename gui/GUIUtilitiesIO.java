@@ -169,6 +169,17 @@ public abstract class GUIUtilitiesIO
 		});
 	}
 	
+	public void addEditableField(final JCheckBox option)
+	{
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override public void run()
+			{
+				options.addEditableField(option);
+				window.revalidate();
+			}
+		});
+	}
+	
 	/**
 	 * Deletes all of the current checkboxes form the screen.
 	 */
@@ -273,5 +284,6 @@ public abstract class GUIUtilitiesIO
 		answerArea.requestFocus();
 		robot.keyPress(KeyEvent.VK_ENTER);
 		robot.keyRelease(KeyEvent.VK_ENTER);
+		options.submit();
 	}
 }

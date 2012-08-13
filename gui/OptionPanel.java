@@ -19,14 +19,20 @@
 
 package gui;
 
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Robot;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 /**
  * 
@@ -43,9 +49,11 @@ public class OptionPanel implements ItemListener
 	private GridLayout layout = null;
 	// The number of items contained in the GridLayout. This is
 	// needed so that I can arrange items vertically in rows.
-	private int num_rows = 0;
+	private int num_rows = 1;
 	// The container for the selected options.
 	private ArrayList<String> selectedOptions = null;
+	private JTextArea textInput = null;
+	private boolean isInputReady = false;
 
 	/**
 	 * Constructor that initializes all of the fields
@@ -82,9 +90,21 @@ public class OptionPanel implements ItemListener
 		++num_rows;
 		layout.setRows(num_rows);
 		panel.setLayout(layout);
-
 		panel.add(option);
 		option.addItemListener(this);
+	}
+	
+	public void addEditableField(JCheckBox option)
+	{
+		textInput = new JTextArea(4, 10);
+		textInput.setEditable(false);
+		textInput.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.add(option);
+		layout.setColumns(2);
+		panel.setLayout(layout);
+		panel.add(textInput);
+		option.removeItemListener(this);
+		option.addItemListener(new editableFieldListener());
 	}
 
 	/**
@@ -132,5 +152,25 @@ public class OptionPanel implements ItemListener
 				selectedOptions.add(((JCheckBox) e.getItemSelectable()).getText());
 		}
 	}
-
+	
+	private class editableFieldListener implements ItemListener
+	{
+		@Override
+		public void itemStateChanged(ItemEvent e)
+		{
+			if (e.getItemSelectable() instanceof JCheckBox)
+			{
+				if (e.getStateChange() == ItemEvent.SELECTED)
+					textInput.setEditable(true);
+				else
+					textInput.setEditable(false);
+			}
+		}
+	}
+	
+	protected void submit() throws AWTException
+	{
+		if (textInput.isEditable())
+			selectedOptions.add(textInput.getText());
+	}
 }
