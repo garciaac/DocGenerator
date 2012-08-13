@@ -129,7 +129,7 @@ public class Questionaire
 				option = input.readLine();
 			}
 			// Wait for user to press enter. TODO --> make this into a submit button
-			GUI.getInstance().getInput();
+			output.createAnswer(GUI.getInstance().getInput());
 			// Add all of the selected options to the output file.
 			for (int ii=0; ii<GUI.getInstance().getSelectedOptions().size(); ++ii)
 				output.createAnswer(GUI.getInstance().getSelectedOptions().get(ii) + "\n");
