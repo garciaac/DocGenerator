@@ -89,12 +89,12 @@ public class OptionPanel implements ItemListener
 		panel.add(option);
 		option.addItemListener(this);
 	}
-	
+
 	public void addEditableField(JCheckBox option)
 	{
-		textInput = new JTextArea(4, 10);
+		textInput = new JTextArea("If other, enter information here.", 4, 10);
 		textInput.setEditable(false);
-		textInput.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		textInput.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 		this.add(option);
 		layout.setColumns(2);
 		panel.setLayout(layout);
@@ -148,7 +148,7 @@ public class OptionPanel implements ItemListener
 				selectedOptions.add(((JCheckBox) e.getItemSelectable()).getText());
 		}
 	}
-	
+
 	private class editableFieldListener implements ItemListener
 	{
 		@Override
@@ -157,16 +157,20 @@ public class OptionPanel implements ItemListener
 			if (e.getItemSelectable() instanceof JCheckBox)
 			{
 				if (e.getStateChange() == ItemEvent.SELECTED)
+				{
+					textInput.setText("");
 					textInput.setEditable(true);
+				}
 				else
 					textInput.setEditable(false);
 			}
 		}
 	}
-	
+
 	protected void submit() throws AWTException
 	{
-		if (textInput.isEditable())
-			selectedOptions.add(textInput.getText());
+		if (textInput != null)
+			if (textInput.isEditable())
+				selectedOptions.add(textInput.getText());
 	}
 }

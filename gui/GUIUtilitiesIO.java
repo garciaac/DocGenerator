@@ -98,10 +98,10 @@ public abstract class GUIUtilitiesIO
 			tmp = answerArea.getText();
 		}
 		// Clear the text in the answer area and indicates the input is not
-		// ready.
+		// ready to be read.
 		answerArea.setText("");
 		isInputReady = false;
-		return tmp.trim();
+		return tmp;
 	}
 
 	/**
@@ -258,32 +258,14 @@ public abstract class GUIUtilitiesIO
 	{
 		questionArea.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 	}
-
-	/**
-	 * This method allows editing of the answer area. Editing is disabled until
-	 * a menu item is clicked.
-	 */
-	public void setEditable()
-	{
-		answerArea.setText("");
-		answerArea.setEditable(true);
-	}
-
-	/**
-	 * This method disallows editing of the answer area.
-	 */
-	public void setUnEditable()
-	{
-		answerArea.setEditable(false);
-	}
 	
 	//TODO 
 	protected void submit() throws AWTException
 	{
+		options.submit();
 		Robot robot = new Robot();
 		answerArea.requestFocus();
 		robot.keyPress(KeyEvent.VK_ENTER);
 		robot.keyRelease(KeyEvent.VK_ENTER);
-		options.submit();
 	}
 }

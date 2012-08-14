@@ -101,8 +101,6 @@ public abstract class GenericEventHandler implements ActionListener, Runnable
 	{
 		// The output document object.
 		WordOutputDocument outputDoc = null;
-		// Allow the user to input text.
-		GUI.getInstance().setEditable();
 		GUI.getInstance().setBoldFont();
 		GUI.getInstance().setHeader("");
 		// Hide the menu so the user can't spawn another thread while this one

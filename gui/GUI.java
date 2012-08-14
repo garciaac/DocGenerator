@@ -33,7 +33,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -64,27 +63,6 @@ import event_handlers.WirelessHandler;
 public class GUI extends GUIUtilitiesIO
 {
 	/* @formatter:off --> turns off my automatic formatter */
-	// //////////////////////////////////////////////////////////////////////////////////
-	// Fields Inherited from GUIUtilitiesIO class
-	//
-	// protected JTextArea questionArea;
-	// protected JTextArea answerArea;
-	// protected OptionPanel options;
-	// protected boolean isInputReady;
-	// protected JLabel header;
-	//
-	// /////////////////////////////////////////////////////////////////////////////////
-	// Methods Inherited from GUIUtilitiesIO class
-	//
-	// public void setKeyListener(KeyListener listener_)
-	// public synchronized String getInput(String prompt) 
-	// public synchronized String getInput()
-	// public void out(final String str) 
-	// public void cls()
-	// public void addOption(final Component option)
-	// protected void redirectStreams()
-	//
-	// /////////////////////////////////////////////////////////////////////////////////
 	/* @formatter:on */
 
 	// The singleton instance of the class.
@@ -204,7 +182,6 @@ public class GUI extends GUIUtilitiesIO
 		questionArea.setLineWrap(true);
 		// Pads the borders of the GUI so the text is not right up against them.
 		questionArea.setMargin(new Insets(10, 10, 10, 10));
-		//JScrollPane scrollingArea = new JScrollPane(questionArea);
 		// Put the question area into a panel to use later.
 		JPanel questionPanel = new JPanel();
 		questionPanel.add(questionArea);
@@ -216,17 +193,13 @@ public class GUI extends GUIUtilitiesIO
 		
 		// Combine the question area and options field into one panel.
 		JPanel optionWindow = new JPanel(new BorderLayout());
-		optionWindow.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 		optionWindow.setBackground(Color.WHITE);
 		optionWindow.add(options.getPanel(), BorderLayout.CENTER);
 		optionWindow.add(questionPanel, BorderLayout.NORTH);
 
 		// Defines the area where the user can type input.
-		answerArea = new JTextArea("Input text here.", 10, 80);
-		answerArea.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		answerArea = new JTextArea(0,0);
 		answerArea.setEditable(false);
-		answerArea.setLineWrap(true);
-		answerArea.setMargin(new Insets(10, 10, 10, 10));
 
 		//TODO
 		submit = new JButton("Submit");
@@ -254,8 +227,6 @@ public class GUI extends GUIUtilitiesIO
 		
 		// Allows GUIUtilitiesIO access to the KeyListener.
 		super.setKeyListener(listener);
-		// Redirects System.out and System.err to the GUI.
-		this.redirectStreams();
 		// Specifies which font to use initially (There are multiple fonts for
 		// questionArea. See methods below).
 		this.setBoldFont();

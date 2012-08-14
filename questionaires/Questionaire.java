@@ -132,10 +132,8 @@ public class Questionaire
 			//TODO
 			GUI.getInstance().addEditableField(new JCheckBox("Other"));
 			
-			// Wait for user to press enter. TODO --> make this into a submit button
-			String additionalText = GUI.getInstance().getInput().trim();
-			if (additionalText.length() > 0)
-				output.createAnswer(additionalText);
+			// Wait for the robot to press enter. NOTE: Done in the GUIUtilitiesIO.submit() method.
+			GUI.getInstance().getInput();
 			
 			// Add all of the selected options to the output file.
 			for (int ii=0; ii<GUI.getInstance().getSelectedOptions().size(); ++ii)
@@ -164,7 +162,7 @@ public class Questionaire
 			GUI.getInstance().out(additionalInfo);
 		}
 
-		GUI.getInstance().out("Press enter to contiue.");
+		GUI.getInstance().out("Press submit to contiue.");
 		GUI.getInstance().getInput();
 		// Close streams to the input document.
 		input.close();
