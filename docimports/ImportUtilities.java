@@ -1,4 +1,4 @@
-/* PRESIDIO CONFIDENTIAL
+/** PRESIDIO CONFIDENTIAL
  * __________________
  * 
  * Copyright (c) [2012] Presidio Networked Solutions 
@@ -29,17 +29,23 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FilenameUtils;
 
-
+/**
+ * 
+ * This class provides some utility function that produces the dialog window
+ * where the user chooses a location for the output file.
+ * 
+ */
 public class ImportUtilities
 {
 	/**
-	 * This method obtains an output file according to the user's choice.
+	 * This method obtains an output file by providing the user with a dialog
+	 * window.
 	 * 
-	 * @return A File object pointing at the user's desired file.
+	 * @return A string containing the path to the desired file.
 	 */
 	public static String getOutputFile()
 	{
-		// Builds a JFileChooser, which will provide the user with a GUI to
+		// Builds a JFileChooser, which will provide the user with a window to
 		// navigate the file system.
 		JFrame fileChooserWindow = new JFrame();
 		JFileChooser fc = new JFileChooser();
@@ -48,23 +54,31 @@ public class ImportUtilities
 		fc.setMultiSelectionEnabled(false);
 
 		File outputFile = null;
+		// Initializes the variable that indicates whether the user wants to
+		// overwrite an existing file.
 		int overwrite = JOptionPane.YES_OPTION;
+		// Loop until the user picks a non-existing file or overwrites an
+		// existing one.
 		do
 		{
-			// Get the output file
+			// Get the output file object
 			outputFile = getOutputFileLocation(fc, fileChooserWindow);
 			// If the file already exists, prompt the user if he/she wants to
 			// overwrite it.
 			if (outputFile.exists())
 			{
+				// JOptionPane encapsulates the process of obtaining the user's
+				// choice.
 				overwrite = JOptionPane.showConfirmDialog(new JFrame(),
 									"File already exists. Do you want to overwrite it?", null,
 									JOptionPane.INFORMATION_MESSAGE);
+				// Exit loop if the user wants to overwrite the file.
 				if (overwrite == JOptionPane.YES_OPTION)
 					break;
 			}
 		} while (outputFile.exists());
 
+		// Return the full path to the file without its extension.
 		return FilenameUtils.removeExtension(outputFile.getAbsolutePath());
 	}
 
@@ -72,17 +86,22 @@ public class ImportUtilities
 	 * This method prompts the user to choose a location for an output file.
 	 * 
 	 * @param fc
-	 *            The FileChooser object that handles the GUI operations.
+	 *            The FileChooser object that handles the user interactions.
 	 * @param fileChooserWindow
-	 *            The window which will contain the FileChooser
+	 *            The window which will contain the FileChooser.
 	 * @return The file that the user selects.
 	 */
 	private static File getOutputFileLocation(JFileChooser fc, JFrame fileChooserWindow)
 	{
+		// Initializes the variable holding the value associated with the button
+		// that the user clicked on in the window.
 		int buttonPressed = JOptionPane.NO_OPTION;
+		// Loop until the user selects something other than cancel (in this case
+		// 'save');
 		do
 		{
-			// Figure out which button in the FileChooser the user clicked.
+			// Display a file-choosing dialog window and determine which button
+			// the user clicks on.
 			buttonPressed = fc.showSaveDialog(fileChooserWindow);
 			// If the user clicked 'Cancel' then confirm that the user wants to
 			// exit.
@@ -100,6 +119,7 @@ public class ImportUtilities
 			// Loop until the user clicks the save button.
 		} while (buttonPressed == JFileChooser.CANCEL_OPTION);
 
+		// Return the selected file in the form of a File object.
 		return fc.getSelectedFile();
 	}
 }

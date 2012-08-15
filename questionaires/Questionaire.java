@@ -1,4 +1,4 @@
-/* PRESIDIO CONFIDENTIAL
+/** PRESIDIO CONFIDENTIAL
  * __________________
  * 
  * Copyright (c) [2012] Presidio Networked Solutions 
@@ -14,7 +14,7 @@
  * 
  * Author: 	Andrew Garcia
  * Email:	agarcia@presido.com
- * Last Modified: Aug 7, 2012 10:45:30 AM
+ * Last Modified: Aug 15, 2012 1:38:49 PM
  */
 
 package questionaires;
@@ -62,7 +62,7 @@ public class Questionaire
 	 * @param filename
 	 *            The name of the file containing the questions.
 	 * @throws IOException
-	 *             Passes on the IOException if it is raised by creating the
+	 *             Passes on the IOException if it is raised when creating the
 	 *             WordInputDocument object.
 	 */
 	public Questionaire(String filename) throws IOException
@@ -74,8 +74,9 @@ public class Questionaire
 		}
 		catch (IOException e)
 		{
-			throw new IOException("There was a problem accessing an input file. Please make " +
-										"sure none of them are open in another program.", e);
+			// Just to add a custom message to the error handling system.
+			throw new IOException("There was a problem accessing an input file. Please make "
+								+ "sure none of them are open in another program.", e);
 		}
 
 		// Initializes the BufferedReader. It is created around a StringReader,
@@ -92,8 +93,8 @@ public class Questionaire
 
 	/**
 	 * This method executes the dialog with the user. For each question, it asks
-	 * the question, and then records the user's answer, and then writes both
-	 * the question and answer to the output file.
+	 * the question, and then records the user's answer(s), and then writes both
+	 * the question and answer(s) to the output file.
 	 * 
 	 * @param output
 	 *            The output Word file, which is the final deliverable after the
@@ -112,31 +113,33 @@ public class Questionaire
 		// files.
 		while (question != null && question.length() != 0)
 		{
-			// Clear any previous text.
+			// Clear any previous text from the output area.
 			GUI.getInstance().cls();
 			// Clear out any checkboxes on screen.
 			GUI.getInstance().clearOptions();
 			// Record question and read options.
 			output.createQuestion(question);
 			GUI.getInstance().out(question);
+			// Reads the first option.
 			String option = input.readLine();
 			// Loop until there are no more options.
 			while (option != null && option.length() != 0)
 			{
-				// Add each option to the GUI.
+				// Add the option to the GUI.
 				GUI.getInstance().addOption(new JCheckBox(option));
 				// Read the next one.
 				option = input.readLine();
 			}
-			
-			//TODO
+
+			// Adds the option for the user to input additional information.
 			GUI.getInstance().addEditableField(new JCheckBox("Other"));
-			
-			// Wait for the robot to press enter. NOTE: Done in the GUIUtilitiesIO.submit() method.
+
+			// Wait for the robot to press enter. NOTE: Done in the
+			// GUIUtilitiesIO.submit() method.
 			GUI.getInstance().getInput();
-			
+
 			// Add all of the selected options to the output file.
-			for (int ii=0; ii<GUI.getInstance().getSelectedOptions().size(); ++ii)
+			for (int ii = 0; ii < GUI.getInstance().getSelectedOptions().size(); ++ii)
 				output.createAnswer(GUI.getInstance().getSelectedOptions().get(ii) + "\n");
 
 			// Read next question.
@@ -162,6 +165,8 @@ public class Questionaire
 			GUI.getInstance().out(additionalInfo);
 		}
 
+		// Wait for the user to press the submit button before continuing to the
+		// next session.
 		GUI.getInstance().out("Press submit to contiue.");
 		GUI.getInstance().getInput();
 		// Close streams to the input document.

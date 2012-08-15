@@ -1,4 +1,4 @@
-/* PRESIDIO CONFIDENTIAL
+/** PRESIDIO CONFIDENTIAL
  * __________________
  * 
  * Copyright (c) [2012] Presidio Networked Solutions 
@@ -14,7 +14,8 @@
  * 		
  * Author: 	Andrew Garcia
  * Email:	agarcia@presido.com
- * Last Modified: Jul 26, 2012 02:26:42 PM
+ * Last Modified: Aug 15, 2012 1:38:14 PM
+ * 
  */
 
 package event_handlers;
@@ -36,7 +37,6 @@ import word_interfaces.WordOutputDocument;
 import docimports.ImportUtilities;
 
 /**
- * 
  * This class defines common functionality for all of the EventHandler classes.
  * It is an abstract class, so it cannot be instantiated directly. You need to
  * provide an instance of one of the other EventHandlers, which will inherit all
@@ -48,15 +48,15 @@ import docimports.ImportUtilities;
  */
 public abstract class GenericEventHandler implements ActionListener, Runnable
 {
-	// This is a collection of all of the questionaire files.
+	// A collection of all of the questionaire files.
 	protected ArrayList<Questionaire> questions;
+	// The root directory where the questionaires are located.
 	private String directory = null;
 
 	/**
-	 * This constructor aggregates all of the questionaire files and stores them
-	 * in 'questions'.
+	 * This constructor takes a value for the root directory.
 	 * 
-	 * @param directory
+	 * @param directory_
 	 *            The string which represents the relative or absolute path
 	 * @throws IOException
 	 *             Throws an exception if there is a problem looping through the
@@ -68,7 +68,9 @@ public abstract class GenericEventHandler implements ActionListener, Runnable
 	}
 
 	/**
-	 * This method executes when a menu item is clicked.
+	 * This method executes when a menu item is clicked. It aggregates all of
+	 * the questionaire files, and then spawns a thread to handle the user
+	 * interactions.
 	 * 
 	 * @param e
 	 *            The event that triggers the method call.
@@ -109,16 +111,16 @@ public abstract class GenericEventHandler implements ActionListener, Runnable
 		GUI.getInstance().cls();
 
 		// @formatter:off --> turns off my automatic formatter
-		// Tells the user to choose a location for the output file
+		// Informs the user to choose a location for the output file.
 		JOptionPane.showMessageDialog(new JFrame(), 
 							"Please choose a location for the output file",
 							null, 
 							JOptionPane.INFORMATION_MESSAGE);
 
-		// Create an output document
+		// Creates the output document.
 		outputDoc = new WordOutputDocument(ImportUtilities.getOutputFile());
 
-		// Loop through all of the questionaire files.
+		// Loops through all of the questionaire files.
 		for (int ii = 0; ii < questions.size(); ++ii)
 		{
 			// Clear the screen for each section and add a section header.

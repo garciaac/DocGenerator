@@ -1,4 +1,4 @@
-/* PRESIDIO CONFIDENTIAL
+/** PRESIDIO CONFIDENTIAL
  * __________________
  * 
  * Copyright (c) [2012] Presidio Networked Solutions 
@@ -14,7 +14,7 @@
  * 		
  * Author: 	Andrew Garcia
  * Email:	agarcia@presido.com
- * Last Modified: Jul 25, 2012 10:04:59 AM
+ * Last Modified: Aug 15, 2012 1:39:17 PM
  */
 
 package gui;
@@ -63,14 +63,27 @@ import event_handlers.WirelessHandler;
 public class GUI extends GUIUtilitiesIO
 {
 	/* @formatter:off --> turns off my automatic formatter */
+	//////////////////////////////////////////////////////////////
+	//			Fields Inherited from GUIUtilitiesIO			//
+	//////////////////////////////////////////////////////////////
+	// protected JTextArea questionArea = null;					//
+	// protected JTextArea answerArea = null;					//
+	// protected JButton submit = null;							//
+	// protected OptionPanel options = null;					//
+	// protected JFrame window = null;							//
+	// protected boolean isInputReady = false;					//
+	//////////////////////////////////////////////////////////////
+	//			Methods Inherited from GUIUtilitiesIO			//
+	//////////////////////////////////////////////////////////////
+	// protected void redirectStreams();						//
+	// protected void submit() throws AWTException;				//
+	//////////////////////////////////////////////////////////////
 	/* @formatter:on */
 
 	// The singleton instance of the class.
 	private static volatile GUI instance = null;
 	// The title for the GUI window
 	private static String titleStr = "Doc Generator";
-	// The actual GUI window
-	//private JFrame window = null;
 	// A header that can be displayed at the top of the window
 	private JLabel header = null;
 	// The menu bar that runs along the top of the window
@@ -80,10 +93,10 @@ public class GUI extends GUIUtilitiesIO
 	private KeyListener listener = new KeyListener()
 	{
 		/**
-		 * This method defines what happens when a key is typer
+		 * This method defines what happens when a key is typed
 		 * 
 		 * @param e
-		 *            The event that triggers this method.
+		 *            The event that triggers the method call.
 		 */
 		@Override
 		public void keyTyped(KeyEvent e)
@@ -168,7 +181,7 @@ public class GUI extends GUIUtilitiesIO
 		// Create the menu bar that runs along the top of the window.
 		menu = this.createMenuBar();
 
-		// Creates a field that contains a header right below the menu bar.
+		// Creates a header that will go right below the menu bar.
 		header = new JLabel();
 		// Defines the font, size and style of the header
 		header.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC, 32));
@@ -186,23 +199,26 @@ public class GUI extends GUIUtilitiesIO
 		JPanel questionPanel = new JPanel();
 		questionPanel.add(questionArea);
 		questionPanel.setBackground(Color.WHITE);
-		
-		// Initialize the options field.
+
+		// Initialize the options menu.
 		options = new OptionPanel();
 		options.getPanel().setBackground(Color.WHITE);
-		
+
 		// Combine the question area and options field into one panel.
 		JPanel optionWindow = new JPanel(new BorderLayout());
 		optionWindow.setBackground(Color.WHITE);
 		optionWindow.add(options.getPanel(), BorderLayout.CENTER);
 		optionWindow.add(questionPanel, BorderLayout.NORTH);
 
-		// Defines the area where the user can type input.
-		answerArea = new JTextArea(0,0);
+		// Defines the area where the user used to be able to type input. This
+		// is invisible to the user now and is controlled by a robot in the
+		// GUIUtilitiesIO.submit() method.
+		answerArea = new JTextArea(0, 0);
 		answerArea.setEditable(false);
 
-		//TODO
+		// Creates the submit button at the bottom of the GUI.
 		submit = new JButton("Submit");
+		// Defines what action to take when the button is pressed.
 		submit.addActionListener(new ActionListener()
 		{
 			@Override
@@ -218,19 +234,18 @@ public class GUI extends GUIUtilitiesIO
 				}
 			}
 		});
-		
-		//TODO
+
+		// Combine the answerArea and submit button into one panel.
 		JPanel answerWindow = new JPanel(new BorderLayout());
 		answerWindow.add(answerArea, BorderLayout.CENTER);
 		answerWindow.add(submit, BorderLayout.SOUTH);
-		
-		
+
 		// Allows GUIUtilitiesIO access to the KeyListener.
 		super.setKeyListener(listener);
 		// Specifies which font to use initially (There are multiple fonts for
 		// questionArea. See methods below).
 		this.setBoldFont();
-		
+
 		// Creates the window and adds all of the components.
 		window = new JFrame(title);
 		window.setSize(new Dimension(1000, 800));
@@ -240,9 +255,8 @@ public class GUI extends GUIUtilitiesIO
 		// 'No' in the confirmation dialog.
 		window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		window.setJMenuBar(menu);
-		//window.add(scrollingArea, BorderLayout.CENTER);
 		window.add(optionWindow, BorderLayout.CENTER);
-		window.add(answerWindow, BorderLayout.SOUTH);//TODO
+		window.add(answerWindow, BorderLayout.SOUTH);// TODO
 		window.add(header, BorderLayout.NORTH);
 		window.addWindowListener(wAdapt);
 		window.setVisible(true);
@@ -290,7 +304,7 @@ public class GUI extends GUIUtilitiesIO
 		window.setJMenuBar(menu);
 		window.validate();
 	}
-	
+
 	/**
 	 * This method displays text in the header field of the GUI window.
 	 * 
@@ -301,7 +315,6 @@ public class GUI extends GUIUtilitiesIO
 	{
 		header.setText(label);
 	}
-
 
 	/**
 	 * This method creates the menu bar, which will go at the top of the GUI

@@ -1,4 +1,4 @@
-/* PRESIDIO CONFIDENTIAL
+/** PRESIDIO CONFIDENTIAL
  * __________________
  * 
  * Copyright (c) [2012] Presidio Networked Solutions 
@@ -14,7 +14,7 @@
  * 
  * Author: 	Andrew Garcia
  * Email:	agarcia@presido.com
- * Last Modified: Aug 4, 2012 10:27:39 AM
+ * Last Modified: Aug 15, 2012 1:38:30 PM
  */
 
 package gui;
@@ -53,12 +53,17 @@ public abstract class GUIUtilitiesIO
 	// The output area of the GUI.
 	protected JTextArea questionArea = null;
 	// The user input area of the GUI.
+	// NOTE: This is no longer visible to the user. It is controlled by a robot.
+	// See submit() method.
 	protected JTextArea answerArea = null;
-	//TODO
+	// The submit button that moves the user from one question to the next.
 	protected JButton submit = null;
+	// The area where the checkboxes are located.
 	protected OptionPanel options = null;
+	// The window where all the components reside.
 	protected JFrame window = null;
-	// Keeps track of whether or not the input is ready to be read.
+	// Keeps track of whether or not the input in answerArea is ready to be
+	// read.
 	protected boolean isInputReady = false;
 	// The object that listens for the event indicating the input is ready to be
 	// read.
@@ -68,7 +73,8 @@ public abstract class GUIUtilitiesIO
 	 * This method assigns an object to the 'listener' field.
 	 * 
 	 * @param listener_
-	 *            The object you want to use.
+	 *            The key listener that keeps track of keyboard events and
+	 *            handles them.
 	 */
 	public void setKeyListener(KeyListener listener_)
 	{
@@ -81,7 +87,7 @@ public abstract class GUIUtilitiesIO
 	 * @param prompt
 	 *            A message to display to the user prompting for what
 	 *            information to provide.
-	 * @return The user's input.
+	 * @return The user's input. NOTE: This is controlled by a robot now.
 	 */
 	public synchronized String getInput(String prompt)
 	{
@@ -92,13 +98,16 @@ public abstract class GUIUtilitiesIO
 		{
 			this.out(prompt);
 		}
-		// Waits until the KeyListener sets isInputReady to true.
+		// Waits until isInputReady is set to true. This is done by the key
+		// listener.
 		while (!isInputReady)
 		{
 			tmp = answerArea.getText();
 		}
-		// Clear the text in the answer area and indicates the input is not
-		// ready to be read.
+		// Clears the text in the answer area and indicates the input is not
+		// ready to be read yet. Even though the answerArea is controlled by a
+		// robot, it STILL NEEDS TO BE CLEARED or else questions will get
+		// skipped because newlines are still in the buffer.
 		answerArea.setText("");
 		isInputReady = false;
 		return tmp;
@@ -116,7 +125,7 @@ public abstract class GUIUtilitiesIO
 	}
 
 	/**
-	 * This method displays text to the question area of the GUI.
+	 * This method displays text to the output area of the GUI.
 	 * 
 	 * @param str
 	 *            The message to display.
@@ -134,7 +143,7 @@ public abstract class GUIUtilitiesIO
 			}
 		});
 	}
-	
+
 	/**
 	 * This method clears the question area of any text.
 	 */
@@ -149,15 +158,17 @@ public abstract class GUIUtilitiesIO
 			}
 		});
 	}
-	
+
 	/**
 	 * Adds a new checkbox option to the window.
 	 * 
 	 * @param option
-	 * 				The checkbox to add.
+	 *            The checkbox to add.
 	 */
 	public void addOption(final JCheckBox option)
 	{
+		// Creates a Runnable and tells the GUI to execute it when the GUI is
+		// ready.
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			@Override
@@ -168,23 +179,36 @@ public abstract class GUIUtilitiesIO
 			}
 		});
 	}
-	
+
+	/**
+	 * This method adds an editable field to the options menu.
+	 * 
+	 * @param option
+	 *            The checkbox to add. The editable text field will be supplied
+	 *            by the OptionPanel class.
+	 */
 	public void addEditableField(final JCheckBox option)
 	{
-		SwingUtilities.invokeLater(new Runnable(){
-			@Override public void run()
+		// Creates a Runnable and tells the GUI to execute it when the GUI is
+		// ready.
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
 			{
 				options.addEditableField(option);
 				window.revalidate();
 			}
 		});
 	}
-	
+
 	/**
 	 * Deletes all of the current checkboxes form the screen.
 	 */
 	public void clearOptions()
 	{
+		// Creates a Runnable and tells the GUI to execute it when the GUI is
+		// ready.
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			@Override
@@ -195,7 +219,7 @@ public abstract class GUIUtilitiesIO
 			}
 		});
 	}
-	
+
 	/**
 	 * This method gives access to the user's selected options.
 	 * 
@@ -240,7 +264,7 @@ public abstract class GUIUtilitiesIO
 		System.setOut(new PrintStream(outs, true));
 		System.setErr(new PrintStream(outs, true));
 	}
-	
+
 	/**
 	 * This method sets the font in the question area to be bold and bigger. It
 	 * is used to display the important messages at the end of the questionaire
@@ -258,13 +282,26 @@ public abstract class GUIUtilitiesIO
 	{
 		questionArea.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 	}
-	
-	//TODO 
+
+	/**
+	 * This method is called when the submit button is pressed. The original
+	 * design was based around the user pressing enter in an editable text field
+	 * for each question. This method works around having to redesign that code
+	 * by having a robot press enter in the same field where the user would
+	 * have. NOTE: The editable text field "answerArea" is invisible to the
+	 * user.
+	 * 
+	 * @throws AWTException
+	 *             When the creation of the Robot object fails.
+	 */
 	protected void submit() throws AWTException
 	{
+		// Tell the OptionPanel class that the user pressed submit.
 		options.submit();
+		// Creates a robot and presses the enter key.
 		Robot robot = new Robot();
-		answerArea.requestFocus();
+		answerArea.requestFocus(); // Puts the focus of the GUI in the
+									// answerArea.
 		robot.keyPress(KeyEvent.VK_ENTER);
 		robot.keyRelease(KeyEvent.VK_ENTER);
 	}

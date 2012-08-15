@@ -1,4 +1,4 @@
-/* PRESIDIO CONFIDENTIAL
+/** PRESIDIO CONFIDENTIAL
  * __________________
  * 
  * Copyright (c) [2012] Presidio Networked Solutions 
@@ -28,7 +28,7 @@ import javax.swing.UIManager;
 /**
  * 
  * This is the class that actually runs the application. Most of the
- * functionality is encapsulated in the GUI and EventHandler classes.
+ * functionality is encapsulated in the other classes.
  * 
  */
 public class Driver
@@ -49,7 +49,8 @@ public class Driver
 			{}
 
 			// Grabs the singleton instance of the GUI. It is automatically
-			// shown on screen.
+			// displayed on screen, and the rest of the application is event
+			// driven by the GUI.
 			GUI.getInstance();
 		}
 		catch (Exception e)
